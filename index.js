@@ -24,12 +24,12 @@ module.exports = {
       io.sockets.on('connection', function(socket) {
         if (textEdit != null) {
           textEdit.on('textChanged', () => {
-            socket.emit('setHtml', {html: md.render(textEdit.text())});
+            socket.emit('setHtml', {html: md.render(textEdit.text)});
             // Without this, preview is not reflected sometimes...
             // Maybe a bug of SilkEdit
             process._tickCallback();
          });
-         socket.emit('setHtml', {html: md.render(textEdit.text())});
+         socket.emit('setHtml', {html: md.render(textEdit.text)});
         }
       });
 
