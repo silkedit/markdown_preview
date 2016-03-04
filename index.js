@@ -1,7 +1,6 @@
 var silkedit = require('silkedit');
 var fs = require('fs');
 var http = require('http');
-var server = http.createServer();
 var md = require('markdown-it')();
 var path = require('path');
 
@@ -11,6 +10,13 @@ module.exports = {
 
   commands: {
     "preview": () => {
+      const textEdit = silkedit.App.activeTextEditView();
+      if (textEdit == null) {
+        console.log('active TextEdit is null');
+        return;
+      }
+
+      var server = http.createServer();
       server.on('request', function(req, res) {
         const url = req.url == "/" ? "/index.html" : req.url;
         var stream = fs.createReadStream(__dirname + url);
@@ -20,9 +26,7 @@ module.exports = {
       var io = require('socket.io').listen(server);
       server.listen(0);
 
-      const textEdit = silkedit.App.activeTextEditView();
       io.sockets.on('connection', function(socket) {
-        if (textEdit != null) {
           textEdit.on('textChanged', () => {
             socket.emit('setHtml', {html: md.render(textEdit.text)});
             // Without this, preview is not reflected sometimes...
@@ -30,7 +34,6 @@ module.exports = {
             process._tickCallback();
          });
          socket.emit('setHtml', {html: md.render(textEdit.text)});
-        }
       });
 
       const group = silkedit.App.activeTabViewGroup();
