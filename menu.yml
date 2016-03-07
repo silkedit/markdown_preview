@@ -1,6 +1,6 @@
 menu:
   - id: view
     menu:
-      - label: 'Markdown Preview'
+      - title: 'Markdown Preview'
         id: preview
         command: markdown_preview.preview
