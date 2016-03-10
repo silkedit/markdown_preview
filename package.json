@@ -1,6 +1,6 @@
 {
   "name": "markdown_preview",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Markdown Preview",
   "main": "index.js",
   "repository": "silkedit/markdown_preview",
@@ -17,5 +17,10 @@
   "scripts": {
     "build": "webpack"
   },
-	"os" : [ "darwin"]
+	"os" : [ "darwin"],
+  "locales": {
+    "ja_JP": {
+      "description": "マークダウンプレビュー"
+    }
+  }
 }
