@@ -41,7 +41,7 @@ module.exports = {
         const webView = new silkedit.WebView();
         webView.load(new silkedit.Url(`http://localhost:${server.address().port}`));
         const fileName = path.basename(textEdit.path());
-        group.splitVertically(webView, `${fileName} ${silkedit.tr('markdown_preview:preview', 'Preview')}`);
+        group.splitVertically(webView, `${fileName} ${silkedit.tr('preview', 'markdown_preview', 'Preview')}`);
         webView.show();
       }
     }
