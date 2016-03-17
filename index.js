@@ -10,7 +10,7 @@ module.exports = {
 
   commands: {
     "preview": () => {
-      const textEdit = silkedit.App.activeTextEditView();
+      const textEdit = silkedit.App.activeTextEdit();
       if (textEdit == null) {
         console.log('active TextEdit is null');
         return;
