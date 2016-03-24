@@ -3,3 +3,7 @@ menu:
     title: マークダウンプレビュー
 
 preview: プレビュー
+
+command:
+  preview:
+    description: マークダウンプレビュー
