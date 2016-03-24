@@ -1,7 +1,11 @@
 var silkedit = require('silkedit');
 var fs = require('fs');
 var http = require('http');
-var md = require('markdown-it')();
+var md = require('markdown-it')({
+  html: true,
+  linkify: true,
+  typographer: true
+});
 var path = require('path');
 
 module.exports = {
@@ -20,7 +24,7 @@ module.exports = {
       server.on('request', function(req, res) {
         const url = req.url == "/" ? "/index.html" : req.url;
         var stream = fs.createReadStream(__dirname + url);
-        res.writeHead(200, {'Content-Type': 'text/html'});
+        res.writeHead(200);
         stream.pipe(res);
       });
       var io = require('socket.io').listen(server);
