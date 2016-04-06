@@ -1,12 +1,12 @@
-var silkedit = require('silkedit');
-var fs = require('fs');
-var http = require('http');
-var md = require('markdown-it')({
+const silkedit = require('silkedit');
+const fs = require('fs');
+const path = require('path');
+const http = require('http');
+const md = require('markdown-it')({
   html: true,
   linkify: true,
   typographer: true
 });
-var path = require('path');
 
 module.exports = {
   activate: function() {
@@ -23,9 +23,28 @@ module.exports = {
       var server = http.createServer();
       server.on('request', function(req, res) {
         const url = req.url == "/" ? "/index.html" : req.url;
-        var stream = fs.createReadStream(__dirname + url);
-        res.writeHead(200);
-        stream.pipe(res);
+        const pathInPkg = __dirname + url;
+
+        fs.open(pathInPkg, 'r', (err, fd) => {
+          if (err) {
+            // If the path relative to the base url is not found, try to find the path relative to the markdown file's directory.
+            // Then we can support ```![image](images/test.png)``` to show an image file relative to the markdown file.
+            const pathInMarkdown = path.dirname(textEdit.path()) + url;
+            fs.open(pathInMarkdown, 'r', (err, fd) => {
+              if (err) {
+                console.warn(`${pathInMarkdown} not found`);
+              } else {
+                var stream = fs.createReadStream(pathInMarkdown);
+                res.writeHead(200);
+                stream.pipe(res);
+              }
+            });
+          } else {
+            var stream = fs.createReadStream(pathInPkg);
+            res.writeHead(200);
+            stream.pipe(res);
+          }
+        });
       });
       var io = require('socket.io').listen(server);
       server.listen(0);
