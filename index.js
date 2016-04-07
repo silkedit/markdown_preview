@@ -1,3 +1,5 @@
+'use strict'
+
 const silkedit = require('silkedit');
 const fs = require('fs');
 const path = require('path');
@@ -20,6 +22,10 @@ const md = require('markdown-it')({
               divWrap: true,
               divClass: 'task-list-item-checkbox'
             });
+
+// This Set keeps a reference to webView object.
+// Without this, webView object is deleted after preview command and destroyed event is not emitted.
+const webViews = new Set();
 
 module.exports = {
   activate: function() {
@@ -62,13 +68,15 @@ module.exports = {
       var io = require('socket.io').listen(server);
       server.listen(0);
 
+      let callback;
       io.sockets.on('connection', function(socket) {
-          textEdit.on('textChanged', () => {
+         callback = () => {
             socket.emit('setHtml', {html: md.render(textEdit.text)});
             // Without this, preview is not reflected sometimes...
             // Maybe a bug of SilkEdit
             process._tickCallback();
-         });
+         }
+         textEdit.on('textChanged', callback);
          socket.emit('setHtml', {html: md.render(textEdit.text)});
       });
 
@@ -79,6 +87,12 @@ module.exports = {
         const fileName = path.basename(textEdit.path());
         group.splitVertically(webView, `${fileName} ${silkedit.tr('preview', 'markdown_preview', 'Preview')}`);
         webView.show();
+        webViews.add(webView);
+        webView.on('destroyed', () => {
+          server.close();
+          webViews.delete(webView);
+          textEdit.removeListener('textChanged', callback);
+        });
       }
     }
   }
