@@ -2,10 +2,20 @@ const silkedit = require('silkedit');
 const fs = require('fs');
 const path = require('path');
 const http = require('http');
+const hljs = require('highlight.js');
 const md = require('markdown-it')({
   html: true,
   linkify: true,
-  typographer: true
+  typographer: true,
+  highlight: function (str, lang) {
+    if (lang && hljs.getLanguage(lang)) {
+      try {
+        return hljs.highlight(lang, str).value;
+      } catch (__) {}
+    }
+
+    return ''; // use external default escaping
+  }
 }).use(require('markdown-it-checkbox'),{
               divWrap: true,
               divClass: 'task-list-item-checkbox'
