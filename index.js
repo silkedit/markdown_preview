@@ -6,7 +6,10 @@ const md = require('markdown-it')({
   html: true,
   linkify: true,
   typographer: true
-});
+}).use(require('markdown-it-checkbox'),{
+              divWrap: true,
+              divClass: 'task-list-item-checkbox'
+            });
 
 module.exports = {
   activate: function() {
