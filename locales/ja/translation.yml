@@ -1,9 +1,5 @@
-menu:
-  preview:
-    title: マークダウンプレビュー
+menu.preview.title: マークダウンプレビュー
+
+command.preview.description: マークダウンプレビュー
 
 preview: プレビュー
-
-command:
-  preview:
-    description: マークダウンプレビュー
