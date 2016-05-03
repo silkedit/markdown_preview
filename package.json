@@ -4,7 +4,7 @@
   "description": "Markdown Preview",
   "main": "index.js",
   "repository": "silkedit/markdown_preview",
-  "author": "SilkEdit team",
+  "author": "SilkEdit",
   "license": "MIT",
   "dependencies": {
     "highlight.js": "^9.3.0",
