@@ -1,6 +1,6 @@
 {
   "name": "markdown_preview",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "Markdown Preview",
   "main": "index.js",
   "repository": "silkedit/markdown_preview",

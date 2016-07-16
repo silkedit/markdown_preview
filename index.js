@@ -35,7 +35,8 @@ module.exports = {
           callback();
         });
         page.setWebChannel(channel);
-        webView.url = `file://${__dirname}/index.html`;
+        const url = `file:///${__dirname.replace(/\\/g, '/')}/index.html`;
+        webView.url = url;
         const fileName = path.basename(textEdit.path());
         group.splitVertically(webView, `${fileName} ${tr('preview', 'markdown_preview', 'Preview')}`);
         webView.show();
