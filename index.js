@@ -35,15 +35,20 @@ module.exports = {
           callback();
         });
         page.setWebChannel(channel);
-        const url = `file:///${__dirname.replace(/\\/g, '/')}/index.html`;
-        webView.url = url;
-        const fileName = path.basename(textEdit.path());
-        group.splitVertically(webView, `${fileName} ${tr('preview', 'markdown_preview', 'Preview')}`);
-        webView.show();
-        webViews.add(webView);
-        webView.on('destroyed', () => {
-          webViews.delete(webView);
-          textEdit.removeListener('textChanged', callback);
+        const dirPath = __dirname.replace(/\\/g, '/');
+        const htmlFile = `${dirPath}/index.html`;
+        fs.readFile(htmlFile, "utf-8", (err, data) => {
+          if (err) throw err;
+          const baseUrl = "file:///" + path.dirname(textEdit.path()) + "/";
+          webView.setHtml(data.replace(/\$\{preview_root\}/g, dirPath), baseUrl);
+          const fileName = path.basename(textEdit.path());
+          group.splitVertically(webView, `${fileName} ${tr('preview', 'markdown_preview', 'Preview')}`);
+          webView.show();
+          webViews.add(webView);
+          webView.on('destroyed', () => {
+            webViews.delete(webView);
+            textEdit.removeListener('textChanged', callback);
+          });
         });
       }
     }

@@ -1,11 +1,12 @@
 <html>
   <head>
-    <link rel="stylesheet" type="text/css" href="./css/github-markdown.css">
-    <link rel="stylesheet" type="text/css" href="./css/github-markdown-ext.css">
-    <link rel="stylesheet" type="text/css" href="./css/github.css">
-    <script type="text/javascript" src="./markdown-it.7.0.0.min.js"></script>
+    <!-- Can't use a relative path becaues we set baseUrl as the root directory of the markdown file -->
+    <link rel="stylesheet" type="text/css" href="${preview_root}/css/github-markdown.css">
+    <link rel="stylesheet" type="text/css" href="${preview_root}/css/github-markdown-ext.css">
+    <link rel="stylesheet" type="text/css" href="${preview_root}/css/github.css">
+    <script type="text/javascript" src="${preview_root}/markdown-it.7.0.0.min.js"></script>
     <script type="text/javascript" src="qrc:///webchannel.js"></script>
-    <script src="./bundle.js"></script>
+    <script src="${preview_root}/bundle.js"></script>
   </head>
   <body class="markdown-body">
   </body>
