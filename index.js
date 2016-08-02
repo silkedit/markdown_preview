@@ -6,16 +6,14 @@ const path = require('path');
 
 // This variable keeps a reference to webView object.
 // Without this, webView object is deleted after preview command and destroyed event is not emitted.
-let webView;
-
-let callback;
+let webViewMap = new Map();
 
 function openPreview(textEdit, group) {
-  webView = new WebView();
+  const webView = new WebView();
   const page = new WebPage(webView);
   webView.setPage(page);
   const channel = new WebChannel(webView);
-  callback = () => {
+  const callback = () => {
     channel.sendMessage('text', textEdit.text);
   };
   channel.on('connection', () => {
@@ -44,9 +42,22 @@ function openPreview(textEdit, group) {
     }
     webView.show();
     webView.on('destroyed', () => {
-      webView = null;
-      textEdit.removeListener('textChanged', callback);
+      var path = null;
+      for (var entry of webViewMap.entries()) {
+        if (entry[1] === webView) {
+          path = entry[0];
+          break;
+        }
+      }
+      
+      if (path != null) {
+        webViewMap.delete(path);
+        textEdit.removeListener('textChanged', callback);
+      } else {
+        console.error('webView not found in webViewMap');        
+      }
     });
+    webViewMap.set(textEdit.path(), webView);
   });
 }
 
@@ -65,15 +76,23 @@ module.exports = {
       const group = App.activeTabViewGroup();
       if (group != null) {
         let found = false;
-        group.tabViews.forEach((tabView) => {
-          for (let i = 0; i < tabView.count; i++) {
-            if (tabView.widget(i) === webView) {
-              found = true;
-              tabView.closeTab(i);
-              return;
+        const webView = webViewMap.get(textEdit.path());
+        if (webView) {
+          group.tabViews.forEach((tabView) => {
+            for (let i = 0; i < tabView.count; i++) {
+              if (tabView.widget(i) === webView) {
+                found = true;
+                if (webView.visible) {
+                  tabView.closeTab(i);                  
+                } else {
+                  tabView.currentIndex = i;
+                }
+
+                return;
+              }
             }
-          }
-        });
+          });
+        }
         
         if (!found) {
           openPreview(textEdit, group);
